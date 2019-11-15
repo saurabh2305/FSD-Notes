@@ -870,13 +870,578 @@ Building images:
      - Remove docker image
              - docker rmi <imageid/name> 
              - docker  rmi [-f] <imageid/name> 
-              
+
+   Create  MVC Application Image using Docker
+   Need to install Docker from microsoft in Visual Code
+ - MultiStage Building
+             - create dockerfile and .dockerignore file
+             - build image using "docker build -t <imagename>  ."
+             - run the image using  "docker run -p hostport:containerport <imagename>""   
+              ex:docker run -p 7060:80 "demomvcapp"
+docker build -t demomvcapp:latest .
+-----------------------------------------------------------------------------------------------------------------
+Azure
+Challenges of traditional server:
+    - Infrastructure cost - Compute,storage and network
+   - Scaling
+       - Scale up - increase the size of existing instance.
+       - Scale out - increase the number of instances               
+  - backup
+      - Explicit backup policy need to be implemented
+ - Security
+      - Security for application and network need to be configured explicitly
+ - monitoring
+      - cofigure monitoring services
+ - compliance to specifications
+      - ISO certifications
+Cloud
+      - No need to buy infrastructure - No infra cost
+      - Scaling of app instances happens quickly
+      - Backup - inbuilt backup policies implemented
+      - All levels of security is enabled
+      - Monitoring is by default enabled
+      - Compliance - All kinds of apps can be deployed
+      - Pay as you go Model
+      -New frameworks and technologies are adopted
+
+Type of clouds
+     - Private cloud
+          - Cloud infrastructure for a single customer
+          - Cloud vendor provide service only for a single customer
+             oracle/hp
+     - Public cloud 
+          - Any body can register and create an account
+          - You can buy subscription and start creating services
+          - Multiple users share the same infrastructure
+     - Hybrid cloud
+            - Combination ofpublic and private cloud
+             
+Cloud models
+       - Cloud services include DB services, compute services, storage services, identity services, messaging services
+       - Compute service: needed to deply web application
+       -Three cloud service models
+              - laas - Infrastructure as a service
+                         - Cloud vendor offers infra services like compute (CPU,RAM), STORAGE, Network
+                         - You can set up your own app infrastructure using the laas services
+                         - This services are used by Admins 
+              - PaaS- Platform as a service
+                         - This is used by developers
+                         - Developers will get a preconfigured platform where server, database and security is already configured
+              - Saas - Software as a service
+                         - It is used by end user
+                         - software is also provided by cloud vendor
+                         - example: facebook, office 365,skype (login and use the service),one drive
+Azure Cloud:     
+          - Provides Iaas and PaaS services.
+          - Azure is having datacenters in more than 50 regions.
+          - Azure Subscription
+               -   Free subscription
+                      - Free trail - 1300Rs  /200$ for a month
+                      - MSDN subscription
+                      - Azure Pass 
+              -  Pay As you go - Monthly bill
+                     - Corporate accounts    
+        - Connecting Azure services
+              - Web portal (https://portal.azure.com)
+             - Command line options
+                  - Powershell
+                        - Powershell for Azure (only for windows) - AzureRm Module
+                        - Poweshell Core (Cross platform) - AZ module
+                  - Azure CLI - Cross platform 
+             - Azure SDK for progrmming languages
+             - ARM template (JSON file - declarative model)
+             - REST apis
+       - Azure Resource Manager Model   (ARM)                         
+              - Resource group
+                    - Grouping resources
+                    - Group wise deployment
+                    - Assign permission for group of resources (RBAC-Roll based access control)
+                    - Group wise billing
+
+  Azure site: Azure.microsoft.com >> Downloads
+create resource group
+coudshell>> 
+comand(WINDOWS POWERSHELL ISE Tool):
+Connect-AZAccount
+Get-AZResourceGroup
+
+New-AzResourceGroup -Name "HexGroup" -Location "Southeast Asia"
+az login
+az group list -o table    (lists groups in tabular format)
+az group create -n HexGroup -l "Southeast Asia"
+
+az group delete --n HexGroup  (for deleting group)
+az group list -o table  (lists available groups)
+
+- ARM template
+          - JSON file that contains the list of resources need to be deployed
+          - Sections
+               - Parameters
+                    - Any dynamic value accepted from user at time of deployment
+               - Variables
+                   - used to store intermediate and reusable values.
+               - Resources
+                   - The Azure resources such as VM,VNET,Storage acc, DB etc
+              - Output
+                   - output need to be printed in the screen after the template execution  
+Storage account create on cloud:
+
+PS Azure:\> cd /home
+PS /home> ls
+kedar
+PS /home> cd kedar
+PS /home/kedar> ls
+azuredeploy.json  azuredeploy.parameters.json  clouddrive  
+PS /home/kedar> New-AzResourceGroupDeployment -Name "MyDeploy"-ResourceGroupName "HexaGroup" -templateFile "./azuredeploy.json"      
+
+   -  Storage Account	
+            - PaaS  service for storing unstructured data/files in Azure
+            - One storage account can store maximum 500tb data 
+            - Maximum of 200 storage accounts per subscription
+            - Every storage has a unique name that is globally unique
+                    https://mystorageacc.blob.core.windows.net
+           - A storage account provides four types of storage options:
+                  - Blob (containers)
+                          - Unstructured blob files such as audio,video,image,textfiles,documents etc
+                  - File Share
+                        - Used for storing unstructured files
+                        - It is possible to map a file share as a network drive in your machine
+                        - it uses SMB 3.0 protocol
+                  - Queue  
+                    - it is used for message based communication between apps
+                    - one message max is 64 kb
+                    - message max TTL is 7 days.
+                 - Table storage  
+                     - key-value pair unstructured data storage (NoSql)
+       - Replication
+             - it always takes minimum 2 copies of storage account data
+             - SLA of 99.99 on Availability
+            - Methods:
+                 - LRS - locally redundant storage
+                 - ZRS - zone redundant storage
+                 - GRS - Geo redundant storage
+                 - RA-GRS - Read Access- Geo redundant storage
+       - Kind
+                 - Storage V1
+                       - All four services are available
+                       - Storage media as standard/premium
+                       - No option for selecting Hot/cool  
+                 - Storage V2
+                         - Blob + Storage V1
+                         - All service types are supported
+                         - Hot and cool is available 
+                 - Blob
+                      - only blob type is allowed
+                      - Hot and Cool is available
+                      - No premium support
+                     directory browsing not supported in blob
+       - Access tier
+                 - Hot
+                 - Cool
+       - Media
+                 -  Standard (HDD)
+                 - Premium (SSD-Faster read write)   
+         
+       - Security
+                 - Access keys
+                      - Key1 and Key2 is available
+                      - Both keys have admin previlages
+                 - SAS Tokens 
+                      - Shared access signature
+                      - granular permission over storage account         
+
+         -Blobs
+                      - Page blobs
+                      - Block blobs
+                      - Append blobs
+         - Queue
+                 - Asynchronous message based communication (youtube player)
+                 - message max size is 64 kb
+                 - one message max TTL is 7 days   
+
+        - Table
+               - Unstructured Key-Value storage.
+               - Data is stored as entities.
+               - Every entity has a row key and a partition key
+               - An entity can have max of 256 keys
+               - For every entity there will 3 built-in keys- Row key,partition key and timestamp
+              - Row key and Partition key is used to uniquely identify record
+        - FileShare
+                   - Is used to create network file shares that can be mapped to your machine
+                   - It is used to as an extended storage for your machine
+                   - It used the blob storage concept behind 
+                   - It used the SMB3.0 protocol that provides network mapping facility.  
+                   - it will create extra drive in machine
+
+WindowsAzure.Storage nuget package is needed to connect to storage account created on Azure
+
+- AzureAppService
+___________________
+           - Is a compute service.
+           - Is a PaaS service used to deploy web, Api and Mobile Apps.
+           - App Service Web App
+                 - Is used to deploy web applications such as MVC,WebForms etc
+          - App Service API App
+                  - used to deploy RESTFUL services and web Services
+         - App Service Mobile App
+                  - Mobile App Backend service is deployed.
+                  -Push notifications can be sent to mobile frontend
+        - URL: https://[appservicename].azurewebsites.net
+        -Custom domain mapping
+        - App Service Plan
+               - Defines the SKU (Capacity) + Location
+               - SKU (Plan)
+                       - Free Plan
+                             -No SLA available
+                             -No custom domain mapping
+                             - Shared Infrastructure 
+                       - Shared Plan
+                             - No SLA
+                            - sHARED Infrastructure
+                            -  custom domain mapping suppot
+                            - minimum charge 
+                       - Basic
+                            - SLA Available
+                            - Dedicated machine
+                            - custom domain mapping suppot   
+                           - Manual Scaling Possible (cpu utilization high then manually need to give instance)
+                           - Not recommended for production 
+                       - Standard
+                           - Recommended for production
+                           - All features of Basic included
+                           - Automatic scaling support
+                           - Staging support(5 slots)
+                          - Daily 10 times backup 
+                       - Premium
+                           - More backup timig (50 times in a day)
+                           - Maximum 20 slots
+                       - ASE (App Service Environment) (Isolated)  
+                             - VM is created in an isolated network( separate network)
+                             one plan= one virtual machine  
+              Deployment:
+                      - Deploy from VS/VS Code
+                      - Deployment Center
+                      - Github
+                 -git sourcecode manager need to install
+               Git commands in command prompt:
+                 git init
+                 git --version
+                 git add  .
+                 git commit -m "initial commit"
+                 git remote add origin https://github.com/saurabh2305/azurewebapp.git
+                 git push -u origin master
+
+              Scaling of application
+                        - Scale Out
+                              - Increase the number of instances of the application 
+                              - Manual Scaling
+                              - Automatic scaling - scale based on some metrics 
+                        - Scale Up
+                              - Instance size is increased than the number
+                              - Changing app service plan 
+               Deployment Slots
+                         - Slots are created for testing and staging environments
+                         - By default a production slot only available
+                         - We can create additional slots in standard and premium plans.      
+              CosmosDB
+                  - Database PaaS service.
+                  - A multi-model,planet scale database that supports multiple database engines.
+                              - DocumentDB (SQL API)
+                              - MongoDB API
+                       - Key-Value Pair
+                               - Azure Table API
+                       - Graph
+                                -Gremlin
+                       - Column Family
+                                 - Casandra
+                 - It uses only SSD disk
+                 - SLA   - 99.999999999%
+                             - Availability
+                             - Durability
+                             - Consistency
+                             - latency
+
+                 - Create cosmosdb account
+                              - Select DB model
+                              - Database
+                                    - Collection/Containers
+                                          - Document/Data item   
+                  Throughtput
+                           - Performance unit for a database and collection.
+                           - It is calculated based on Request Unit
+                           - 1 RU = One read of 1 Kb data        
+                  
+                  MultiHoming Api (to reduce read latency)
+                  Failover
+                      - Automatic failover.
+                  - Consistency levels
+                          
+
+   AKS
+               - Azure Kubernetes Service
+                     - Orchestrators
+                        - Which do monitoring and management of cluster
+                        - Automatic patching
+                        - Automatic Upgrade
+                        - Automatic scaling
+                        - Securing applications
+                - User can give instruction to cluster orchestrator
+                - Orchestrator receives instruction from user and executes within cluster
+                - ORCHESTRATORS  (Clustered service) in Azure
+                        - AKS
+                              - Master - Worker node architecture
+                              - Master machine is running the orchestrator
+                              - Master does not run the client applications
+                              -  Client apps running in worker machines
+                              - Master machine contains sytem services such as cluster manager, storae service
+                              - AKS cluster can run only containerized services.(it is container cluster)
+                              - we can deploy microservice and monolithic apps
+                 - SF -Service Fabric
+                       -  it is a microservices cluster
+                       - Applications can be containerized or non-containerized
+                       - It can deploy apps that is developed using service fabrice sdk ( from microsoft)
+                       - In SF cluster there is no master, all machines are worker nodes
+                       - orchestrator name is service fabric
+      - Container clusters
+                       - Kubernetes cluster - Orchestrator name is Kubernetes (K8S)
+                       - DOCKER SWARM Cluster - Orchestrator name is Docker swarm
+                       - DC/OS Cluster - Orchestrator name is DC/OS
+                       - dc/os CLUSTER - Orchestrator 
+     - Replica set
+
+   - Cluster creation using vs code commands for deployment
+#Login to Azure
+ az login
+
+ #Create a resource group
+ az group create -n K8SGroup -l southeastasia
+
+ # get supported Kubernetes versions
+ #az aks get-versions -l southeastasia --query "orchestrators[-1].orchestratorVersion" -on tsv
+az asks get-versions -l southeastasia -o table
+#select appropriate verisions of kubernetes #we select 1.13.12 
+#if getting error as Microsoft.Network namespace is not registered execute the following command
+az provider register --namespace Microsoft.Network
+
+az aks create -g K8SGroup -n k8cluster -l southeastasia --enable-addons monitoring --kubernetes-version 1.13.12 --generate-ssh-keys --node-count 2 --node-vm-size Standard_D1
+
+
+------------------------------------------------------------------------
+Docker hub login
+docker tag catalogapi:latest kedar/catalogapi:latest
+- catalogapi:latest -->kedar/catalogapi:latest
+- docker push kedar/catalogapi 
+
+ - Kubernetes CLI (kubectl.exe)
+ - install kubctl using az aks install-cli          
+ - install YAL extension in vs code
+command to deploy
+kubectl get nodes
+KUBECTL APPLY -f .\catalogapi-deploy.yaml
+kubectl get deploy
+kubectl get pods
+to delete deployment
+kubectl delete deploy <deployment-name>
+instead of delete and redeploy, simply replace existing deployment
+kubectl replace --f "catalog-deploy.yaml"
+
+-Kubernetes service types
+         - Loadbalancer
+               - Service with public IP and private ip
+        - Cluster IP
+                - Service without Public IP (accessible inside n/w only)
+
+
+         -API Gateway Management
+             - Also called APIM
+             - Enable XML/JSON transformation post deployment ex: password attempts exceeded
+             - Request limiting/throttling
+             - Mocking
+             - Versioning
+                 - https://mydata.hexa.net/api/catalog
+             - Replce text 
+          -Policies
+            the configuration applied on request/response is called policy.
+          -Product 
+                 A set of apis(operations)   
+          -Components
+                - Publisher portal
+                          - API Developer(Publisher) is configuring policies
+                          - policy is set of configurations done on APIs
+                          - Azure portal itself is used as publisher portal
+                     - Gateway
+                             - api CONFIGURATION ARE DONE IN gATEWAY.
+                             - MONITORING IS DONE IN GATEWAY
+                             - Gateway forwards request
+                     - Developer portal
+                             - API consumers (client app developers) suscribe for the apis
+                             - Once subscribed they will get a subscription key.
+                             - Key must be sent to API gateway along with request in headers 
+                             - Header ocp-Apim subscription-key IS USED TO SEND THE KEY   
+                     - Policies
+                             - BackendUrl policy
+                             - mocking
+                             - request limit by key
+                             - ip filter
+                             - set header   	
+           - Logic Apps
+                              - It is  a PaaS service for application integration.
+                              - You can integrate multiple SaaS solution in a single workflow.
+                              - Used to create workflow
+                              - A workflow contains one trigger and multiple actions.
+                              - A Logic App uses connectors to connect to the SaaS solutions. 
+                              - Types of triggers
+                                       - Push trigger
+                                                - HttpTrigger
+                                       - Pull trigger
+                                              - Mail Connectors
+                                       - Recurring trigger
+                                               - Timer trigger
+            - ACI - Azure Container Instance
+                       -  This is a serverless computing service. 
+                       - Container deployment options in Azure
+                           - Web App for Containers
+                                  - App service plan is created.(Pre Provision resources)
+                                  - One app per service. (Single container deployment)
+                          - AKS
+                                  - Cluster based deployment.
+                                  - Multiple apps within the cluster service
+                                  - Orchestrater required - Kubernetes
+                          - Service fabric
+                                  - Cluster based deployment
+                                  - Only for MicroServices
+                                  - Containerized apps need to deployas SF project
+                          - ACI - Azure Container Instances
+                                   - Serverless architecture (opposite to webapp)
+                                   - No need to provision any resource before deployment
+                                   - Single container deployment  
+                         - aksworkshop.io microsoft recommended workshop for azure kubernetees  
+
+                  - Azure Function App
+                            - Serverles computing solution
+                            - A function starts executing with a trigger
+                                    - Timer trigger
+                                    - Http Trigger
+                                    - Blob trigger
+                                    - Queue Trigger
+                           - A function app is a piece of code that performs a single operation.
+                           - Function can run 5 minutes by default and max 10 mins
+                           - We need to write the code in c#, F#,js,php.
+                           - Bindings
+                                    - Input bindings
+                                    - Output bindings
+                                    - Trigger binding (Atype of Input binding)
+                          - Hosting Plan
+                                     - Consumption plan
+                                         - Billing is based on number of executions, execution time and memory used.
+                                         - Each function instance limit is 1.5 gb 
+                                     - AppService plan         
+                         - Function App and Function
+                                         - Function is a piece of code that does an atomic task.
+                                         - Function app contains one or more function
+                                         - Two versions 0f FunctionApp - V1 and V2.    
+                          - Storage emulator  installs as part of azure sdk 
+                        - Develop functions locally using Azure Function Cli
+                                          - npm i -g azure-functions-core-tools  
+                          Steps after installing above tool:
+                            inside folder>>  func init  
+                            select worker runtime dotnet
+                                                      >> func new
+                             select a template
+                             Function name
+                              to run function after creating vs code
+                                                   >> func extensions install (reqquires to install any extensions)
+                                                   >> func start  
+                              to list functions in functionapp on cloud
+                                                    >> func azure functionapp list-functions kedar-samplefunctionapp
+                                                     >>func azure functionapp publish <functionappp-name> -i        
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- Devops 
+         - Development and Operations.
+         - SDLC
+                 - Requirement analysis
+                               - Collect client requirements 
+                               - Prioritise Jobs
+                               - Assigning task to Developers and Designers
+                - Designing phase
+                               - ER Diagrams
+                               - UML Diagrams
+              - Development
+                                - Unit testing by developers 
+              - Testing
+                                - Integration testing
+                                - System testing
+                                - Load testing
+                                - UAT
+                                - Bug reporting/Defect identification(functionality not implemented properly)
+                                - medification
+              - Deployment 
+          - Devops 
+                       - Prioritise jobs - Top managers/project managers
+                       - Job Allocation - Top managers/Project managers
+                       - Code Management - Developers
+                       - Testing - Testers
+                       - Automated build and deployment  - Deployment engineers. (CI/CD)
+                        Git
+                               - SCM - Source code management
+                               - Open source
+                               - Distributed version control management
+                       TFVC -
+                               - SCM tool
+                               - Invented byMicrosoft
+                               - Centralized version Control                
+                      Dev.azure.com (devops site) 
+                                                                                  
+            - Pipelines 
+                        - Build pipeline  (CI)
+                        - Release pipeline     (CD- Continous Delivery/Deployment)         
+       
+           - Event Grid
+                       - Communication Patterns
+                              - Restful services
+                                     - Sender and receiver must be online
+                                     - Request - response pattern
+                                     - Synchronous in nature
+                                     - Realtime communication 
+                                     - Protocol is HTTP
+                                     - One to one communication
+                             - Message communication
+                                      - Messages are send by sender to aqueue and receiver receive message                     
+                                      - Message broker service is used such as RabbitMQ and Azure Storage
+                                      - Receiver can be offline
+                                      - Asynchronous and not real time
+                                      - This can be one to one or one to many
+                              - Event driven architecture
+                                         - This is asynchronous
+                                         - Supports one to many communication    
+                                         - Real time communication
+            - Event grid in Azure is a fully managed Event ingestion system.     
+                  EventGridSamples in sonusathyadasrepository                             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+                                       
+
+
+
+       
 
    
-             
+                     
+                
 
-                 
-                      
 
 
 
